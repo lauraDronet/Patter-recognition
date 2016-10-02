@@ -63,16 +63,18 @@ public class kPPV {
      * @param X : un exemple
      * @return
      */
-    private static Double[] calculDistances(Double X[]) {
+    private static Double[][] calculDistances(Double X[]) {
 
         //initialisation du tableau de distance
-        Double Dist[] = new Double[NbClasse * NbExApprent];
-        for (int index = 0; index < Dist.length; index++) {
-            Dist[index] = 0.;
+        Double Dist[][] = new Double[NbClasse][NbExApprent];
+        for (int indexClasse = 0; indexClasse < Dist.length; indexClasse++) {
+            for (int indexExApprent = 0; indexExApprent < Dist.length; indexExApprent++) {
+                Dist[indexClasse][indexExApprent] = 0.;
+            }
         }
 
         //variable qui stocke la somme du carre des soustractions des caracteristiques
-        Double somme[] = new Double[NbExApprent * NbClasse];
+        Double somme[][] = new Double[NbClasse][NbExApprent];
         //variable temporaire pour stocker un calcul intermediaire
         Double temp = 0.;
         //parcour des classes
@@ -81,7 +83,7 @@ public class kPPV {
             for (int indexEx = 0; indexEx < NbExApprent; indexEx++) {
                 //(re)initialisation des variables
                 temp = 0.;
-                somme[indexEx * indexClasse] = 0.;
+                somme[indexClasse][indexEx] = 0.;
                 //parcours de chaque caracteristique
                 for (int indexCaract = 0; indexCaract < NbCaract; indexCaract++) {
                     /* calcul de la soustraction des valeurs de caract pour 
@@ -89,11 +91,11 @@ public class kPPV {
                      */
                     temp = (X[indexCaract] - data[indexClasse][indexEx][indexCaract]);
                     // calcule de la somme
-                    somme[indexEx * indexClasse] = somme[indexEx * indexClasse] + (temp * temp);
+                    somme[indexClasse][indexEx] = somme[indexClasse][indexEx] + (temp * temp);
                 }
                 //calcul de la racine carre de la somme
                 //(dernier calcul de la distance
-                Dist[indexEx * indexClasse] = Math.sqrt(somme[indexEx * indexClasse]);
+                Dist[indexClasse][indexEx] = Math.sqrt(somme[indexClasse][indexEx]);
             }
         }
 
@@ -108,32 +110,22 @@ public class kPPV {
      */
     private static void lectureFichier(String[] args) {
         //---lecture des donnees a partir du fichier iris.data
-        String print[][][] = new String[NbClasse][NbEx][NbCaract];
         String ligne, sousChaine;
         int classe = 0, n = 0;
         try {
             BufferedReader fic = new BufferedReader(new FileReader(args[0]));
             while ((ligne = fic.readLine()) != null) {
                 for (int i = 0; i < NbCaract; i++) {
-                    if(print[classe][n][i] == null){
-                        print[classe][n][i] = "";
-                    }
                     sousChaine = ligne.substring(i * NbCaract, i * NbCaract + 3);
                     data[classe][n][i] = Double.parseDouble(sousChaine);
-                    print[classe][n][i] = print[classe][n][i] + data[classe][n][i] + " " + classe + " " + n;
+                    System.out.println(data[classe][n][i] + " " + classe + " " + n);
                 }
                 if (++n == NbEx) {
                     n = 0;
                     classe++;
                 }
             }
-            for (int i = 0; i < NbEx; i++) {
-                for (int j = 0; j < NbClasse; j++) {
-                    for(int k = 0; k < NbCaract ; k++)
-                        System.out.print(print[j][i][k] + "\t");
-                }
-                System.out.println("");
-            }
+
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -147,17 +139,22 @@ public class kPPV {
      * @param Dist
      * @return
      */
-    public static int getClasse(Double Dist[]) {
+    public static int getClasse(Double Dist[][]) {
         int indiceMin = 0;
-        for (int index = 0; index < Dist.length; index++) {
-            if (Dist[index] < Dist[indiceMin]) {
-                indiceMin = index;
+        int indiceClass = 0;
+        for (int indexClasse = 0; indexClasse < Dist.length; indexClasse++) {
+            for (int indexDistEx = 0; indexDistEx < Dist.length; indexDistEx++) {
+                System.out.println(Dist[indexClasse][indexDistEx]);
+                if (Dist[indexClasse][indexDistEx] < Dist[indexClasse][indiceMin]) {
+                    indiceMin = indexDistEx;
+                    indiceClass = indexClasse;
+                }
             }
         }
-        return indiceMin / NbExApprent;
+        return indiceClass ;
     }
 
-    /** 
+    /**
      *
      * @param matriceConfu
      * @return
