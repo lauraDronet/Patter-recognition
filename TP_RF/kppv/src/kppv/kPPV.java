@@ -67,8 +67,8 @@ public class kPPV {
 
         //initialisation du tableau de distance
         Double Dist[][] = new Double[NbClasse][NbExApprent];
-        for (int indexClasse = 0; indexClasse < Dist.length; indexClasse++) {
-            for (int indexExApprent = 0; indexExApprent < Dist.length; indexExApprent++) {
+        for (int indexClasse = 0; indexClasse < NbClasse; indexClasse++) {
+            for (int indexExApprent = 0; indexExApprent < NbExApprent; indexExApprent++) {
                 Dist[indexClasse][indexExApprent] = 0.;
             }
         }
@@ -142,10 +142,10 @@ public class kPPV {
     public static int getClasse(Double Dist[][]) {
         int indiceMin = 0;
         int indiceClass = 0;
-        for (int indexClasse = 0; indexClasse < Dist.length; indexClasse++) {
-            for (int indexDistEx = 0; indexDistEx < Dist.length; indexDistEx++) {
+        for (int indexClasse = 0; indexClasse < NbClasse; indexClasse++) {
+            for (int indexDistEx = 0; indexDistEx < NbExApprent; indexDistEx++) {
                 System.out.println(Dist[indexClasse][indexDistEx]);
-                if (Dist[indexClasse][indexDistEx] < Dist[indexClasse][indiceMin]) {
+                if (Dist[indexClasse][indexDistEx] < Dist[indiceClass][indiceMin]) {
                     indiceMin = indexDistEx;
                     indiceClass = indexClasse;
                 }
